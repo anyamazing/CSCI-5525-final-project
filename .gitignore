@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 *.json
+=======
+# Data
+*.json
+
+>>>>>>> e15dbd7 (removed JSON data files)
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
