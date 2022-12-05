@@ -27,3 +27,10 @@ def get_product_reviews(df, product_id):
     reviews = reviews[reviews.apply(lambda x: isinstance(x, str))]
     return reviews.tolist()
 
+def reviews_to_file(review_list, file_name):
+    reviews = '\n'.join(reviews)
+    r_file = open(file_name,'w')
+    r_file.write(reviews)
+    r_file.close()
+
+
