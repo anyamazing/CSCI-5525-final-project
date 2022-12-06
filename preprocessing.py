@@ -14,41 +14,44 @@ def lowercase(data_samples):
         data_samples[idx] = sample.lower()
     return data_samples
 
-
 def remove_punctuation(data_samples):
-    """currently limited, does not remove punctuation from inside words"""
-    for i, sample in tqdm(enumerate(data_samples), leave=True):
-        _sample = sample.split()
-        for j, word in enumerate(_sample):
-            _sample[j] = word.strip(" .!?@#&():;,'\/\\")
-        sample = " ".join(_sample)
-        data_samples[i] = sample
-    return data_samples
-
+"""currently limited, does not remove punctuation from inside words"""
+  for i, sample in tqdm(enumerate(data_samples), leave=True):
+    _sample = sample.split()
+    for j, word in enumerate(_sample):
+      _sample[j] = word.strip(" 0123456789\*\$\.!\?@#&\(\):;,'\/\\\"")
+    sample = " ".join(_sample)
+    data_samples[i] = sample
+  return data_samples
 
 def get_wordnet_pos(word):
     """Map POS tag to first character lemmatize() accepts"""
-    # credit to Selva Prabhakaran
-    # https://www.machinelearningplus.com/nlp/lemmatization-examples-python/
-    tag = nltk.pos_tag([word])[0][1][0].upper()
-    tag_dict = {"J": wordnet.ADJ,
-                "N": wordnet.NOUN,
-                "V": wordnet.VERB,
-                "R": wordnet.ADV}
-
-    return tag_dict.get(tag, wordnet.NOUN)
-
+    tag = nltk.pos_tag([word])[0][1]
+    if tag.startswith('J'):
+        return wordnet.ADJ
+    elif tag.startswith('V'):
+        return wordnet.VERB
+    elif tag.startswith('N'):
+        return wordnet.NOUN
+    elif tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return wordnet.NOUN
 
 def lemmatize(data_samples):
-    wnl = WordNetLemmatizer()
-    for i, sample in tqdm(enumerate(data_samples), leave=True):
-        _sample = sample.split()
-        for j, word in enumerate(_sample):
-            tag = get_wordnet_pos(word)
-            _sample[j] = wnl.lemmatize(word, tag)
-        data_samples[i] = " ".join(_sample)
-    return data_samples
+  wnl = WordNetLemmatizer()
+  for i, sample in tqdm(enumerate(data_samples), leave=True):
+      _sample = sample.split()
+      for j, word in enumerate(_sample):
+        tag = get_wordnet_pos(word)
+        if (tag == 'r') or (tag == 'a') or (tag == 'v'):
+          _sample[j] = ""
+        else:
+          _sample[j] = wnl.lemmatize(word,tag)
+      data_samples[i] = ' '.join(_sample)
+      data_samples[i] = re.sub(' +', ' ', data_samples[i])
 
+  return data_samples
 
 PREPROCESSING_STEPS = [lowercase, remove_punctuation, lemmatize]
 
