@@ -1,6 +1,6 @@
 import nltk
 import math
-from itertools import combinations
+from itertools import permutations
 
 def get_word_freqs(data_samples):
     freq = nltk.FreqDist()
@@ -20,7 +20,7 @@ def get_bigram_freqs(data_samples):
     return bi_freq
 
 def u_mass(features, freq, bi_freq, num_docs):
-    pairs = combinations(features,2)
+    pairs = permutations(features,2)
     total = 0
     eta = 1/num_docs
     for pair in pairs:
