@@ -1,30 +1,44 @@
 import nltk
+from nltk import word_tokenize
 import math
-from itertools import permutations
+from itertools import combinations
+from tqdm import tqdm
 
 def get_word_freqs(data_samples):
-    freq = nltk.FreqDist()
-    for sample in data_samples:
-        for word in word_tokenize(sample):
-            freq[word] += 1
+    freq = {}
+    for sample in tqdm(data_samples,leave=True):
+        for word in list(set(word_tokenize(sample))):
+            if word in list(freq.keys()):
+                freq[word] += 1
+            else:
+                freq[word] = 1
+    freq.update((x, float(y)/len(data_samples)) for x,y in freq.items())
 
     return freq
 
-def get_bigram_freqs(data_samples):
-    bi_freq = nltk.FreqDist()
-    for sample in data_samples:
-        bigrams = nltk.bigrams(word_tokenize(sample))
-        for gram in bigrams:
-            bi_freq[gram] += 1
+def get_bi_freqs(data_samples):
+    bi_freq = {}
+    for sample in tqdm(data_samples,leave=True):
+        combos = combinations(list(set(word_tokenize(sample))),2)
+        for combo in combos:
+            if combo in list(bi_freq.keys()):
+                bi_freq[combo] += 1
+            else:
+                bi_freq[combo] = 1
+    bi_freq.update((x, float(y)/len(data_samples)) for x,y in bi_freq.items())
 
     return bi_freq
 
 def u_mass(features, freq, bi_freq, num_docs):
-    pairs = permutations(features,2)
+    pairs = combinations(features,2)
     total = 0
     eta = 1/num_docs
     for pair in pairs:
-        prob = math.log((bi_freq.freq(pair) + eta)/freq.freq(pair[1]))
+        try:
+            num = bi_freq[pair]
+        except:
+            num = 0
+        prob = math.log((num + eta)/freq[pair[1]])
         total += prob
     return total
 
@@ -38,6 +52,8 @@ def avg_umass(model, feature_names, n_top_words, freq, bi_freq, num_docs):
 
 def jaccard(model, feature_names, n_top_words):
     similarities = []
+    x = None
+    y = None
     for i, primary_topic in enumerate(model.components_):
         t_similarities = []
         primary_features_ind = primary_topic.argsort()[: -n_top_words - 1 : -1]
@@ -57,7 +73,8 @@ def jaccard(model, feature_names, n_top_words):
                 t_similarities.append(jac)
 
         similarities.append(t_similarities)
-    return similarities
+
+    return similarities, x, y
 
 def print_jaccard(similarities):
     print("Jaccard similarity coefficient between topics:")

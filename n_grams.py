@@ -2,11 +2,13 @@
 # https://nicharuc.github.io/topic_modeling/
 import nltk
 import pandas as pd
+nltk.download('stopwords')
 
+stop_word_list = set(nltk.corpus.stopwords.words('english'))
 ###############################
 # Bigrams
 ###############################
-def bigram_filter(bigram, stop_word_list):
+def bigram_filter(bigram):
     tag = nltk.pos_tag(bigram)
     if tag[0][1] not in ['JJ', 'NN'] and tag[1][1] not in ['NN']:
         return False
@@ -39,7 +41,7 @@ def get_bigrams(data_samples, occur_rate, pmi_threshold):
 ###############################
 # TRIGRAMS
 ###############################
-def trigram_filter(trigram, stop_word_list):
+def trigram_filter(trigram):
     tag = nltk.pos_tag(trigram)
     if tag[0][1] not in ['JJ', 'NN'] and tag[1][1] not in ['JJ','NN']:
         return False
@@ -70,18 +72,18 @@ def get_trigrams(data_samples, occur_rate, pmi_threshold):
 ###############################
 # NGRAMS
 ###############################
-def replace_ngram(x):
+def replace_ngram(x, bigrams, trigrams):
     for gram in trigrams:
         x = x.replace(gram, '_'.join(gram.split()))
     for gram in bigrams:
         x = x.replace(gram, '_'.join(gram.split()))
     return x
 
-def replace_n_grams(data_samples):
+def replace_n_grams(data_samples, bigrams, trigrams):
     ds = pd.DataFrame(data_samples)
     ds.columns = ['review']
     reviews_w_ngrams = ds.copy()
-    reviews_w_ngrams.review = reviews_w_ngrams.review.map(lambda x: replace_ngram(x))
+    reviews_w_ngrams.review = reviews_w_ngrams.review.map(lambda x: replace_ngram(x, bigrams, trigrams))
     _data_samples = reviews_w_ngrams.values.tolist()
     data_samples = [item for sublist in _data_samples for item in sublist]
     return data_samples

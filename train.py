@@ -1,7 +1,10 @@
 
 import pickle
 from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
-from sklearn.decomposition import NMF, MiniBatchNMF, LatentDirichletAllocation
+# We're not using these at the moment
+#from sklearn.decomposition import NMF, MiniBatchNMF
+from sklearn.decomposition import LatentDirichletAllocation
+from nltk import word_tokenize
 
 n_samples = 2000
 n_features = 1000
@@ -11,7 +14,7 @@ batch_size = 128
 init = "nndsvda"
 
 
-def get_tf_vectorizer(samples=None, write_model=False, filename="vectorizer.pkl", **kwargs):
+def get_tf_vectorizer(samples=None, write_model=False, filename="vectorizer.pkl",**kwargs):
     """Get a term-frequency vectorizer. If no samples are provided, loads a pretrained model from filename.
     If write_model is True, write the model to filename."""
 
@@ -21,7 +24,7 @@ def get_tf_vectorizer(samples=None, write_model=False, filename="vectorizer.pkl"
             return pickle.load(f)
 
     # parameters
-    kwargs.setdefault("max_df", 0.02)
+    kwargs.setdefault("max_df", 0.01)
     kwargs.setdefault("min_df", 2)
     kwargs.setdefault("max_features", n_features)
     kwargs.setdefault("stop_words", "english")
@@ -40,7 +43,7 @@ def get_tf_vectorizer(samples=None, write_model=False, filename="vectorizer.pkl"
     return tf_vectorizer
 
 
-def get_lda(samples=None, write_model=False, filename="lda.pkl", **kwargs):
+def get_lda(samples=None, write_model=False, filename="lda.pkl", n_components=n_components, **kwargs):
     """Get a LDA model. If no samples (term-frequency documents) are provided, loads a pretrained model from filename.
     If write_model is True, write the model to filename."""
 

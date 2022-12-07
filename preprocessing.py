@@ -3,19 +3,18 @@ from nltk.corpus import wordnet
 from nltk import sent_tokenize
 from tqdm import tqdm
 import nltk
+import re
 nltk.download('averaged_perceptron_tagger')
 nltk.download('wordnet')
 nltk.download('omw-1.4')
 
 
 def lowercase(data_samples):
-    """convert samples to lowercase"""
     for idx, sample in tqdm(enumerate(data_samples), leave=True):
         data_samples[idx] = sample.lower()
     return data_samples
 
 def remove_punctuation(data_samples):
-"""currently limited, does not remove punctuation from inside words"""
   for i, sample in tqdm(enumerate(data_samples), leave=True):
     _sample = sample.split()
     for j, word in enumerate(_sample):
@@ -25,7 +24,6 @@ def remove_punctuation(data_samples):
   return data_samples
 
 def get_wordnet_pos(word):
-    """Map POS tag to first character lemmatize() accepts"""
     tag = nltk.pos_tag([word])[0][1]
     if tag.startswith('J'):
         return wordnet.ADJ
@@ -57,7 +55,6 @@ PREPROCESSING_STEPS = [lowercase, remove_punctuation, lemmatize]
 
 
 def preprocess_samples(samples):
-    """processes all of the samples"""
     samples = samples[:]
     for step in PREPROCESSING_STEPS:
         print(f"Applying {step.__name__}")
