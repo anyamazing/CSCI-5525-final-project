@@ -1,7 +1,7 @@
 from data import generate_dataframe
 import json
 
-df = generate_dataframe(["Musical_Instruments_5.json"])
+df = generate_dataframe(["Digital_Music_5.json"])
 name = "music"
 
 # count reviews per product
