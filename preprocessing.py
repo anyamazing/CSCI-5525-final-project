@@ -3,6 +3,7 @@ from nltk.corpus import wordnet
 from nltk import sent_tokenize
 from tqdm import tqdm
 import nltk
+
 nltk.download('averaged_perceptron_tagger')
 nltk.download('wordnet')
 nltk.download('omw-1.4')

@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 
 
 def plot_top_words(model, feature_names, n_top_words, title):
+    """plots the top words per topic"""
     fig, axes = plt.subplots(2, 5, figsize=(30, 15), sharex=True)
     axes = axes.flatten()
     for topic_idx, topic in enumerate(model.components_):
@@ -26,4 +27,3 @@ def get_product_reviews(df, product_id):
     reviews = df[df["asin"] == product_id]["reviewText"]
     reviews = reviews[reviews.apply(lambda x: isinstance(x, str))]
     return reviews.tolist()
-

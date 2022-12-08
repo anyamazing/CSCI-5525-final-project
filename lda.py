@@ -1,7 +1,7 @@
 import pandas as pd
 import json
 
-filename = "AMAZON_FASHION_5.json"
+filename = "Home_and_Kitchen_5.json"
 with open(filename) as f:
     reviews_json = f.readlines()
 
