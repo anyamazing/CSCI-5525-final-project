@@ -1,10 +1,12 @@
-
 import pandas as pd
 import os
 
 
-def generate_dataframe():
-    json_filenames = [pos_json for pos_json in os.listdir(".") if pos_json.endswith('.json')]
+def generate_dataframe(json_filenames=None):
+    if json_filenames is None:
+        json_filenames = [
+            pos_json for pos_json in os.listdir(".") if pos_json.endswith(".json")
+        ]
     print(f"Loading data from: {json_filenames}\n")
 
     dfs = []
